@@ -88,3 +88,7 @@ allow_ports() {
 
     return 0
 }
+
+install_pip
+install_python_dependencies_in_venv
+allow_ports 2025
