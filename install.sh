@@ -7,7 +7,8 @@ install_pip() {
     echo "Installing Python..."
     wait_for_apt_lock
     sudo apt install python3 python3-venv python3-pip pkg-config libmysqlclient-dev -y
-    
+    sudo apt install -y python3 python3-venv python3-pip build-essential cmake \
+    libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev
     # Check Ubuntu version and use virtual environment if Ubuntu 24.04+
 
         echo "Creating virtual environment for Python dependencies..."
