@@ -13,7 +13,8 @@ install_pip() {
     wait_for_apt_lock
     sudo apt install -y python3 python3-venv python3-pip build-essential cmake \
         pkg-config libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev libmysqlclient-dev
-
+ sudo apt install tesseract-ocr 
+sudo apt install libtesseract-dev 
     echo "[INFO] Creating virtual environment..."
     python3 -m venv "$PY_ENV"
 
