@@ -1,31 +1,35 @@
 #!/bin/bash
 
 install_pip() {
-    echo "Updating system..."
+    APP_DIR="/usr/local/facecompare"
+    PY_ENV="$APP_DIR/venv"
+    mkdir -p "$APP_DIR"
+
+    echo "[INFO] Updating system..."
     wait_for_apt_lock
     sudo apt update && sudo apt upgrade -y
-    echo "Installing Python..."
-    wait_for_apt_lock
-    sudo apt install python3 python3-venv python3-pip pkg-config libmysqlclient-dev -y
-    sudo apt install -y python3 python3-venv python3-pip build-essential cmake \
-    libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev
-    # Check Ubuntu version and use virtual environment if Ubuntu 24.04+
 
-        echo "Creating virtual environment for Python dependencies..."
-        python3 -m venv /root/venv
-        source /root/venv/bin/activate
-   
-    
-    echo "Upgrading pip and setuptools..."
-    pip install --upgrade pip setuptools
-    echo "Installing mysqlclient..."
+    echo "[INFO] Installing Python and build tools..."
+    wait_for_apt_lock
+    sudo apt install -y python3 python3-venv python3-pip build-essential cmake \
+        pkg-config libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev libmysqlclient-dev
+
+    echo "[INFO] Creating virtual environment..."
+    python3 -m venv "$PY_ENV"
+
+    # Activate virtual environment
+    source "$PY_ENV/bin/activate"
+
+    echo "[INFO] Upgrading pip and setuptools..."
+    pip install --upgrade pip setuptools wheel
+
+    echo "[INFO] Installing mysqlclient..."
     pip install --no-binary :all: mysqlclient
+
+    echo "[INFO] Python virtual environment setup completed!"
     
-    
+    # Deactivate virtual environment
     deactivate
-  
-    
-    echo "Python and pip setup completed!"
 }
 
 install_python_dependencies_in_venv() {
@@ -33,7 +37,9 @@ wget -O ub24req.txt "https://raw.githubusercontent.com/osmanfc/face_compare/main
     echo "Installing Python dependencies from requirements.txt in a virtual environment..."
 
     # Define the virtual environment name
-    VENV_DIR="/root/venv"
+     APP_DIR="/usr/local/facecompare"
+    VENV_DIR="$APP_DIR/venv"
+    
 
     # Create the virtual environment (if not already created)
     if [ ! -d "$VENV_DIR" ]; then
@@ -61,6 +67,13 @@ wget -O ub24req.txt "https://raw.githubusercontent.com/osmanfc/face_compare/main
         echo "Python dependencies installed successfully in the virtual environment."
     
     fi
+}
+
+wait_for_apt_lock() {
+    while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+        echo "Waiting for apt lock to be released..."
+        sleep 5
+    done
 }
 allow_ports() {
 
