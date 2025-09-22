@@ -24,3 +24,8 @@ flask
 opencv-python
 face_recognition
 numpy
+pytesseract 
+pillow
+opencv-python-headless 
+zxing-cpp
+dlib
