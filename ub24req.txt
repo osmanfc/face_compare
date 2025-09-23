@@ -29,5 +29,4 @@ pillow
 opencv-python-headless 
 zxing-cpp
 dlib
-tesseract-ocr
-libtesseract-dev
+
