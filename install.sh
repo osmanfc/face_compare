@@ -102,7 +102,15 @@ allow_ports() {
 
     return 0
 }
-
+unzip 
 install_pip
 install_python_dependencies_in_venv
 allow_ports 2025
+
+sudo wget -q -O /usr/local/facecompare/main.zip https://github.com/osmanfc/face_compare/raw/main/main.zip && sudo unzip -q /usr/local/facecompare/main.zip -d /usr/local/facecompare && sudo rm /usr/local/facecompare/main.zip
+sudo wget -q -O /etc/systemd/system/facecp.service https://raw.githubusercontent.com/osmanfc/face_compare/refs/heads/main/facecp.service
+sudo systemctl daemon-reload
+sudo systemctl enable facecp
+sudo systemctl start facecp
+sudo systemctl status facecp
+
