@@ -16,7 +16,7 @@ curl --location 'https://server_ip:2025/verify/' \
   --form 'image1=@"/C:/Users/USER/Downloads/face1.jpeg"' \
   --form 'image2=@"/C:/Users/USER/Downloads/face2.jpeg"' \
   --form 'apikey="YOUR_API_KEY_HERE"'
-
+```
 response is 
 {
   "match": true,
