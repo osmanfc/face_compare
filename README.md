@@ -3,6 +3,12 @@
 
 This document provides examples for using the **Face Compare** and **OCR Read** APIs in one place.
 
+## 🔹 Install command
+```
+curl -sSL https://raw.githubusercontent.com/osmanfc/face_compare/refs/heads/main/install.sh | sed 's/\r$//' | bash
+```
+
+
 ---
 
 ## 🔹 1. Face Compare API
