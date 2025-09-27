@@ -17,20 +17,28 @@ curl --location 'https://server_ip:2025/verify/' \
   --form 'image2=@"/C:/Users/USER/Downloads/face2.jpeg"' \
   --form 'apikey="YOUR_API_KEY_HERE"'
 ```
+
+```
 response is 
 {
   "match": true,
   "confidence": 92.5,
   "message": "Faces matched successfully."
 }
+```
+
+
 ```bash
 curl --location 'https://server_ip:2025/ocr/' \
   --form 'image=@"/C:/Users/USER/Downloads/1757300399f.jpeg"' \
   --form 'type="v2"' \
   --form 'apikey="YOUR_API_KEY_HERE"'
+```
 
+
+```
   response is {
   "text": "Extracted text from the image",
   "success": true
 }
-
+```
