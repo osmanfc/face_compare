@@ -1,4 +1,4 @@
-# face_compare
+
 # Face Compare & OCR API Documentation
 
 This document provides examples for using the **Face Compare** and **OCR Read** APIs in one place.
