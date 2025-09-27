@@ -1,5 +1,22 @@
 #!/bin/bash
+display_success_message() {
 
+    GREEN='\033[38;5;83m'
+    NC='\033[0m'	
+    # Get the IP address
+    IP=$(hostname -I | awk '{print $1}')
+    
+    # Get the port from the file
+    PORT=2025
+	DB_PASSWORDx=$(get_password_from_file "/usr/local/facecompare/main/etc/apikey.txt")
+   
+    
+    # Print success message in green
+    echo "${GREEN}You have successfully installed the facecompare panel!"
+    echo "api URL is: https://${IP}:${PORT}"
+  
+    echo "apikey: ${DB_PASSWORDx}${NC}"
+}
 install_pip() {
     APP_DIR="/usr/local/facecompare"
     PY_ENV="$APP_DIR/venv"
@@ -76,36 +93,33 @@ wait_for_apt_lock() {
         sleep 5
     done
 }
-allow_ports() {
+allow_port() {
+    local port=$1
+    if [[ -z "$port" ]]; then
+        echo "Usage: allow_port <port>"
+        return 1
+    fi
 
-    # Allow each port through UFW and iptables
-    for port in "$@"; do
-        # UFW rule
-        sudo ufw allow "$port/tcp"
+    # Detect firewall type
+    if command -v ufw &>/dev/null && sudo ufw status &>/dev/null; then
+        sudo ufw allow "${port}/tcp"
+        sudo ufw reload
         echo "Allowed $port/tcp through UFW."
-
-        # iptables rule
-        sudo iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
-        sudo iptables -A OUTPUT -p tcp --dport "$port" -j ACCEPT
+    elif command -v firewall-cmd &>/dev/null && sudo systemctl is-active firewalld &>/dev/null; then
+        sudo firewall-cmd --permanent --add-port="${port}/tcp"
+        sudo firewall-cmd --reload
+        echo "Allowed $port/tcp through firewalld."
+    else
+        sudo iptables -C INPUT -p tcp --dport "$port" -j ACCEPT 2>/dev/null || sudo iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
+        sudo iptables -C OUTPUT -p tcp --dport "$port" -j ACCEPT 2>/dev/null || sudo iptables -A OUTPUT -p tcp --dport "$port" -j ACCEPT
         echo "Allowed $port/tcp through iptables."
-    done
-
-    # Special case for port range 40110-40210
-    sudo ufw allow 40110:40210/tcp
-    sudo iptables -A INPUT -p tcp --dport 40110:40210 -j ACCEPT
-    sudo iptables -A OUTPUT -p tcp --dport 40110:40210 -j ACCEPT
-    echo "Allowed 40110:40210/tcp through both UFW and iptables."
-
-    sudo ufw allow 53/udp
-    sudo ufw reload
-    echo "UFW rules reloaded."
-
-    return 0
+    fi
 }
-unzip 
+
+
 install_pip
 install_python_dependencies_in_venv
-allow_ports 2025
+allow_port 2025
 
 sudo wget -q -O /usr/local/facecompare/main.zip https://github.com/osmanfc/face_compare/raw/main/main.zip && sudo unzip -q /usr/local/facecompare/main.zip -d /usr/local/facecompare && sudo rm /usr/local/facecompare/main.zip
 sudo wget -q -O /etc/systemd/system/facecp.service https://raw.githubusercontent.com/osmanfc/face_compare/refs/heads/main/facecp.service
@@ -113,4 +127,4 @@ sudo systemctl daemon-reload
 sudo systemctl enable facecp
 sudo systemctl start facecp
 sudo systemctl status facecp
-
+display_success_message
