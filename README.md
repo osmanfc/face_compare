@@ -26,7 +26,7 @@ response is
   "message": "Faces matched successfully."
 }
 ```
-
+## 🔹 2. OCR API
 
 ```bash
 curl --location 'https://server_ip:2025/ocr/' \
